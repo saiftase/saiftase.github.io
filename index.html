@@ -1,0 +1,125 @@
+<!--saiftase.github.io-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--Guarantees 100% dimensions on mobile-->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <!--Guarantees dimensions 100% of browser-->
+    <style type="text/css">
+        html, body { height: 100%; margin: 0; padding: 0; }
+        #map { height: 100%; }
+    </style>
+
+</head>
+
+<body>
+<!--Div to hold map-->
+<div id="map"></div>
+
+<script type="text/javascript">
+
+    var map;
+
+    //Create a map in the "map" div with custom options, centered on Snug Harbor
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                position: google.maps.ControlPosition.RIGHT_TOP
+            },
+            center: {lat: 40.643551, lng: -74.102298},
+            zoom: 17
+        });
+
+        //Add markers to map for Snug and Melcher
+        var melcher =  new google.maps.Marker({
+            map: map,
+            place:{
+                location: {lat: 40.737038, lng: -73.998575},
+                query: 'Melcher Media'
+            },
+            attribution:{
+                source: 'Saif\'s Test App',
+                webUrl:  'https://www.fost.org'
+            }
+        });
+
+        var melcherInfoWindow = new google.maps.InfoWindow({
+            content: 'Melcher Media'
+        });
+        melcher.addListener('click', function(){
+           melcherInfoWindow.open(map, melcher);
+        });
+
+
+        var snug = new google.maps.Marker({
+            position: {lat: 40.643551, lng: -74.102298},
+            map: map,
+            title: 'Snug Harbor'
+        })
+
+        //Add custom control div to map, in top center position.
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+        //Return to Snug a little while after moving mouse out of window.
+        //map.addListener('idle', function(){
+            //window.setTimeout(function(){
+                //map.panTo({lat: 40.643551, lng: -74.102298})
+            //}, 0);
+        //});
+
+    }
+
+    //Create a control overlay with text and a onClickListener
+    function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '16px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Snap to MM';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to center on Melcher Media.
+        controlUI.addEventListener('click', function() {
+            map.setCenter({lat: 40.737038, lng: -73.998575});
+        });
+
+    }
+
+</script>
+
+<!--Loads Google Maps API in background. When loaded calls the initMap function from main script-->
+<!--<script async defer-->
+        <!--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBI7kFeIiztV8KJc1ZGYlOfcjXKytwzxk&callback=initMap">-->
+<!--</script>-->
+
+<!--Alternate loading URL to sign-in users with cookie-->
+<script
+        src="https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyBBI7kFeIiztV8KJc1ZGYlOfcjXKytwzxk" async defer>
+</script>
+
+</body>
+</html>
