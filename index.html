@@ -10,7 +10,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="icon" href='favicon.ico'>
 
-    <!--Guarantees dimensions 100% of browser-->
+    <!--Make map take up 100% of available space-->
     <style type="text/css">
         html, body { height: 100%; margin: 0; padding: 0; }
         #map { height: 100%; }
@@ -19,108 +19,192 @@
 </head>
 
 <body>
+
 <!--Div to hold map-->
 <div id="map"></div>
 
 <script type="text/javascript">
 
     var map;
+    var infoWindow;
 
-    //Create a map in the "map" div with custom options, centered on Snug Harbor
     function initMap() {
+        //Init Map in 'map' div, centered on Snug Harbor
         map = new google.maps.Map(document.getElementById('map'), {
-            mapTypeControlOptions: {
-                style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-                position: google.maps.ControlPosition.RIGHT_TOP
-            },
             center: {lat: 40.643551, lng: -74.102298},
             zoom: 17
         });
 
-        //Add markers to map for Snug and Melcher
-        var melcher =  new google.maps.Marker({
-            map: map,
+        //Load markers and attach attributes and clickable info window to each
+        var markers = getMarkers(map);
+        for (var i = 0; i < markers.length; i++){
+            markers[i].setMap(map);
+            addAttribution(markers[i]);
+            attachInfoWindow(markers[i]);
+        }
+
+    }
+
+    //Returns array of google.maps.Marker types based on map locations
+    function getMarkers(map){
+        var dock =  new google.maps.Marker({
             place:{
-                location: {lat: 40.737038, lng: -73.998575},
-                query: 'Melcher Media'
-            },
-            attribution:{
-                source: 'Saif\'s Test App',
-                webUrl:  'https://www.fost.org'
+                location: {lat: 40.645497, lng: -74.101642},
+                query: 'Snug Harbor Dock'
             }
         });
 
-        var melcherInfoWindow = new google.maps.InfoWindow({
-            content: 'Melcher Media'
+        var entrance = new google.maps.Marker({
+            place: {
+                location: {lat: 40.644816, lng: -74.101081},
+                query: 'Entrance Gate'
+            }
         });
-        melcher.addListener('click', function(){
-           melcherInfoWindow.open(map, melcher);
+
+        var theater = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643621, lng: -74.101323},
+                query: 'Theater'
+            }
         });
 
 
-        var snug = new google.maps.Marker({
-            position: {lat: 40.643551, lng: -74.102298},
-            map: map,
-            title: 'Snug Harbor'
-        })
+        var chapel = new google.maps.Marker({
+            place:{
+               location: {lat: 40.643140, lng: -74.101516},
+                query: 'Chapel'
+            }
+        });
 
-        //Add custom control div to map, in top center position.
-        var centerControlDiv = document.createElement('div');
-        var centerControl = new CenterControl(centerControlDiv, map);
+        var social = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643356, lng: -74.102086},
+                query: 'Social Space'
+            }
+        });
 
-        centerControlDiv.index = 1;
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+        var buildingE = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643724, lng:  -74.101644},
+                query: 'Building E'
+            }
+        });
 
-        //Return to Snug a little while after moving mouse out of window.
-        //map.addListener('idle', function(){
-            //window.setTimeout(function(){
-                //map.panTo({lat: 40.643551, lng: -74.102298})
-            //}, 0);
-        //});
+        var vr = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643343, lng: -74.102513},
+                query: 'VR Space'
+            }
+        });
 
+        var foodTent = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643229, lng: -74.102680},
+                query: 'Food Tent'
+            }
+        });
+
+        var buildingG = new google.maps.Marker({
+            place:{
+                location: {lat: 40.644009, lng: -74.102271},
+                query: 'Building G'
+            }
+        });
+
+        var storyArcade = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643683, lng: -74.102502},
+                query: 'Story Arcade'
+            }
+        });
+
+        var glasshouse = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643287, lng: -74.103623},
+                query: 'Glasshouse'
+            }
+        });
+
+        var buildingK = new google.maps.Marker({
+            place: {
+                location: {lat: 40.643410, lng: -74.102732},
+                query: 'Building K'
+            }
+        });
+
+        var chineseGarden = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643410, lng: 74.102732},
+                query: 'Chinese Scholar\'s Garden'
+            }
+        });
+
+        var tuscanGarden = new google.maps.Marker({
+            place:{
+                location: {lat: 40.641908, lng: -74.101577},
+                query: 'Tuscan Garden'
+            }
+        });
+
+        var cottages = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643158, lng: -74.104414},
+                query: 'Cottages'
+            }
+        });
+
+        var gazebo = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643311, lng: -74.103299},
+                query: 'Gazebo Road'
+            }
+        });
+
+        //OLD
+        var whiteSpace = new google.maps.Marker({
+            place:{
+                location: {lat: 40.643349, lng: -74.101831},
+                query: 'White Space'
+            }
+        });
+
+        var adminBuilding = new google.maps.Marker({
+            place:{
+                location: {lat: 40.641872, lng: -74.101965},
+                query: 'Administrative Building'
+            }
+        });
+
+        var markers = [dock, entrance, theater, chapel, social, buildingE, vr, foodTent, buildingG, storyArcade,
+        glasshouse, buildingK, chineseGarden, tuscanGarden, cottages, gazebo];
+
+        return markers;
     }
 
-    //Create a control overlay with text and a onClickListener
-    function CenterControl(controlDiv, map) {
-
-        // Set CSS for the control border.
-        var controlUI = document.createElement('div');
-        controlUI.style.backgroundColor = '#fff';
-        controlUI.style.border = '2px solid #fff';
-        controlUI.style.borderRadius = '3px';
-        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-        controlUI.style.cursor = 'pointer';
-        controlUI.style.marginBottom = '22px';
-        controlUI.style.textAlign = 'center';
-        controlUI.title = 'Click to recenter the map';
-        controlDiv.appendChild(controlUI);
-
-        // Set CSS for the control interior.
-        var controlText = document.createElement('div');
-        controlText.style.color = 'rgb(25,25,25)';
-        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-        controlText.style.fontSize = '16px';
-        controlText.style.lineHeight = '38px';
-        controlText.style.paddingLeft = '5px';
-        controlText.style.paddingRight = '5px';
-        controlText.innerHTML = 'Snap to MM';
-        controlUI.appendChild(controlText);
-
-        // Setup the click event listeners: simply set the map to center on Melcher Media.
-        controlUI.addEventListener('click', function() {
-            map.setCenter({lat: 40.737038, lng: -73.998575});
-        });
-
+    function addAttribution(marker){
+        marker.attribution = {
+            source: 'FoST App',
+            webUrl:  'https://www.fost.org'
+        }
     }
 
+    function attachInfoWindow(marker){
+        infoWindow = new google.maps.InfoWindow({
+            content: marker.place.query
+        });
+
+        marker.addListener('click', function(){
+            infoWindow.open(map, marker);
+        });
+    }
 </script>
 
-<!--Loads Google Maps API in background. When loaded calls the initMap function from main script-->
+<!--Loads Google Maps API in background. When loaded, calls the initMap function from main script-->
 <!--<script async defer-->
         <!--src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBI7kFeIiztV8KJc1ZGYlOfcjXKytwzxk&callback=initMap">-->
 <!--</script>-->
 
-<!--Alternate loading URL to sign-in users with cookie-->
+<!--Alternate loading URL to sign-in users based on cookie-->
 <script
         src="https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyBBI7kFeIiztV8KJc1ZGYlOfcjXKytwzxk" async defer>
 </script>
